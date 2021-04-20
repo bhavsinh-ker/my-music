@@ -258,6 +258,13 @@ class My_Music_Admin {
 		$additional_contributors = (isset($meta_data['additional_contributors']) && !empty($meta_data['additional_contributors'])) ? $meta_data['additional_contributors'] : "";
 		$music_url = (isset($meta_data['music_url']) && !empty($meta_data['music_url'])) ? $meta_data['music_url'] : "";
 		$music_price = (isset($meta_data['music_price']) && !empty($meta_data['music_price'])) ? $meta_data['music_price'] : "";
+		$currency_symbol = array(
+			"USD" => "&#36;",
+			"EUR" => "&#128;",
+			"GBP" => "&#163;"
+		);
+		$currency = get_option( 'my_music_currency', 'USD' );
+		$currency = (isset($currency_symbol[$currency])) ? $currency_symbol[$currency] : "$";
 		?>
 		<table class="my-music-meta-box-table">
 			<tbody>
@@ -311,7 +318,7 @@ class My_Music_Admin {
 						<label for="my-music-price"><?php _e( 'Price', 'my-music' ); ?>:</label>
 					</th>
 					<td>
-						<span class="my-music-price-icon">$</span>
+						<span class="my-music-price-icon"><?php echo $currency; ?></span>
 						<input type="number" id="my-music-price" name="music_price" value="<?php echo $music_price; ?>">
 					</td>
 				</tr>
@@ -342,6 +349,49 @@ class My_Music_Admin {
 			if(in_array( $key, $allowed_fields )) {
 				$meta->update_music_meta( $post_id, $key, $value );
 			}
+		}
+	}
+
+	/**
+	 * Add admin menu for setting page
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_admin_menu() {
+		add_submenu_page(
+			'edit.php?post_type=music',
+			__( 'Music Settings', 'my-music' ),
+			__( 'Music Settings', 'my-music' ),
+			'manage_options',
+			'my-music-settings',
+			array(
+				$this, 
+				'my_music_setting_page_callback'
+			)
+		);
+	}
+
+	/**
+	 * Setting page HTML
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_setting_page_callback() {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/my-music-admin-display.php';
+	}
+
+	/**
+	 * Setting registration
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_setting_registration() {
+		$settings = array(
+			'my_music_currency',
+			'my_music_musics_per_page'
+		);
+		foreach ($settings as $setting) {
+			register_setting( 'my_music_settings_group', $setting );
 		}
 	}
 }
