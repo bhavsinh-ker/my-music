@@ -155,5 +155,69 @@ class My_Music_Admin {
 		);
 		register_post_type( 'music', $args );
 	}
+	
+	public function my_music_taxonomy_registration() {
+		/* Register Genres taxonomy */
+		$labels = array(
+			'name'              => _x( 'Genres', 'taxonomy general name', 'my-music' ),
+			'singular_name'     => _x( 'Genre', 'taxonomy singular name', 'my-music' ),
+			'search_items'      => __( 'Search Genres', 'my-music' ),
+			'all_items'         => __( 'All Genres', 'my-music' ),
+			'parent_item'       => __( 'Parent Genre', 'my-music' ),
+			'parent_item_colon' => __( 'Parent Genre:', 'my-music' ),
+			'edit_item'         => __( 'Edit Genre', 'my-music' ),
+			'update_item'       => __( 'Update Genre', 'my-music' ),
+			'add_new_item'      => __( 'Add New Genre', 'my-music' ),
+			'new_item_name'     => __( 'New Genre Name', 'my-music' ),
+			'menu_name'         => __( 'Genre', 'my-music' ),
+		);
+	 
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => true,
+			'rewrite'           => array( 'slug' => 'genre' ),
+		);
+	 
+		register_taxonomy( 'genre', array( 'music' ), $args );
+		/* EOF Register Genres taxonomy */
 
+		unset( $args );
+		unset( $labels );
+	
+		/* Register Music Tag taxonomy */
+		$labels = array(
+			'name'                       => _x( 'Music Tags', 'taxonomy general name', 'my-music' ),
+			'singular_name'              => _x( 'Music Tag', 'taxonomy singular name', 'my-music' ),
+			'search_items'               => __( 'Search Music Tags', 'my-music' ),
+			'popular_items'              => __( 'Popular Music Tags', 'my-music' ),
+			'all_items'                  => __( 'All Music Tags', 'my-music' ),
+			'parent_item'                => null,
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Music Tag', 'my-music' ),
+			'update_item'                => __( 'Update Music Tag', 'my-music' ),
+			'add_new_item'               => __( 'Add New Music Tag', 'my-music' ),
+			'new_item_name'              => __( 'New Music Tag Name', 'my-music' ),
+			'separate_items_with_commas' => __( 'Separate Music Tags with commas', 'my-music' ),
+			'add_or_remove_items'        => __( 'Add or remove Music Tags', 'my-music' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Music Tags', 'my-music' ),
+			'not_found'                  => __( 'No Music Tags found.', 'my-music' ),
+			'menu_name'                  => __( 'Music Tags', 'my-music' ),
+		);
+	
+		$args = array(
+			'hierarchical'          => false,
+			'labels'                => $labels,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'update_count_callback' => '_update_post_term_count',
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'music-tag' ),
+		);
+	
+		register_taxonomy( 'music-tag', 'music', $args );
+		/* EOF Register Music Tag taxonomy */
+	}
 }
