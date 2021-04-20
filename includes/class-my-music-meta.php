@@ -82,7 +82,7 @@ class My_Music_Meta {
 	 */
 	public function update_music_meta( $music_id, $meta_key, $meta_value ) {
 
-		$music_meta_id = $this->dbobj->query(
+		$music_meta_id = $this->dbobj->get_results(
 			"SELECT `music_meta_id` FROM `$this->table_name` WHERE `music_id` = $music_id AND `music_meta_key` = $meta_key;"
 		);
 
