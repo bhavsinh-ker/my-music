@@ -32,7 +32,7 @@ class My_Music_Activator {
 		global $wpdb;
 		$musicmeta = $wpdb->prefix . 'musicmeta';
 		// Check if db table is exist or not
-		if($wpdb->get_var("show tables like '$musicmeta'") == $musicmeta) {
+		if($wpdb->get_var("show tables like '$musicmeta'") != $musicmeta) {
 			// create database table
 			$sql = "CREATE TABLE `$musicmeta` ( 
 				`music_meta_id` INT NOT NULL AUTO_INCREMENT , 
