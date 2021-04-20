@@ -23,14 +23,27 @@
 class My_Music_Activator {
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
+	 * Action on plugin activation
 	 *
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+		/* Create Music Meta Database Table */
+		global $wpdb;
+		$musicmeta = $wpdb->prefix . 'musicmeta';
+		// Check if db table is exist or not
+		if($wpdb->get_var("show tables like '$musicmeta'") == $musicmeta) {
+			// create database table
+			$sql = "CREATE TABLE `$musicmeta` ( 
+				`music_meta_id` INT NOT NULL AUTO_INCREMENT , 
+				`music_id` INT NOT NULL , 
+				`music_meta_key` VARCHAR(50) NOT NULL , 
+				`music_meta_value` TEXT NULL , 
+				PRIMARY KEY (`music_meta_id`)
+				) ENGINE = InnoDB;";
+			$wpdb->query($sql);
+		}
+		/* EOF Create Music Meta Database Table */
 	}
 
 }

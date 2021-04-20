@@ -29,3 +29,10 @@
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
+
+/* Remove Music Meta database table */
+global $wpdb;
+$musicmeta = $wpdb->prefix . 'musicmeta';
+$sql = "DROP TABLE IF EXISTS $musicmeta;";
+$wpdb->query($sql);
+/* EOF Remove Music Meta database table */
