@@ -156,6 +156,11 @@ class My_Music_Admin {
 		register_post_type( 'music', $args );
 	}
 	
+	/**
+	 * Register custom taxonomy for Genre and music-tag
+	 *
+	 * @since    1.0.0
+	 */
 	public function my_music_taxonomy_registration() {
 		/* Register Genres taxonomy */
 		$labels = array(
