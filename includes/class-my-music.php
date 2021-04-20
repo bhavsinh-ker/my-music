@@ -164,7 +164,7 @@ class My_Music {
 		$this->loader->add_action( 'init', $plugin_admin, 'my_music_post_type_registration' );
 		$this->loader->add_action( 'init', $plugin_admin, 'my_music_taxonomy_registration' );
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'my_music_meta_box' );
-		$this->loader->add_action( 'save_post', $plugin_admin, 'my_music_save_meta_data', 10 );
+		$this->loader->add_action( 'save_post_music', $plugin_admin, 'my_music_save_meta_data', 10 );		
 	}
 
 	/**
