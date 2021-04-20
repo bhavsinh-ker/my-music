@@ -1,4 +1,25 @@
-/**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
- */
+.my-music-meta-box-table {
+    width: 100%;
+    max-width: 500px;
+}
+.my-music-meta-box-table tr:not(:last-child) td,
+.my-music-meta-box-table tr:not(:last-child) th {
+    padding-bottom: 10px;
+}
+.my-music-meta-box-table tr th {
+    width: 35%;
+    text-align: left;
+}
+.my-music-meta-box-table tr td input,
+.my-music-meta-box-table tr td select {
+    width: 100%;
+}
+.my-music-meta-box-table tr td .my-music-price-icon {
+    display: inline-block;
+    width: 3%;
+    line-height: 26px;
+}
+.my-music-meta-box-table tr td input#my-music-price {
+    width: calc(97% - 6px);
+    display: inline-block;
+}

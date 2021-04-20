@@ -117,6 +117,11 @@ class My_Music {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-my-music-admin.php';
 
 		/**
+		 * The class responsible for defining all music meta operations.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-my-music-meta.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
@@ -158,6 +163,8 @@ class My_Music {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_admin, 'my_music_post_type_registration' );
 		$this->loader->add_action( 'init', $plugin_admin, 'my_music_taxonomy_registration' );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'my_music_meta_box' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'my_music_save_meta_data', 10 );
 	}
 
 	/**

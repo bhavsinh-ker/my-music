@@ -225,4 +225,123 @@ class My_Music_Admin {
 		register_taxonomy( 'music-tag', 'music', $args );
 		/* EOF Register Music Tag taxonomy */
 	}
+
+	/**
+	 * Add custom metabox for music post type
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_meta_box() {
+		add_meta_box(
+            'my_music_meta_box_id',
+            'Music Information',
+            array(
+				$this, 
+				'my_music_custom_meta_box_html'
+			),
+            'music'
+        );
+	}
+
+	/**
+	 * Callback function for music custom meta box
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_custom_meta_box_html( $post ) {
+		$meta = new My_Music_Meta();
+		$post_id = $post->ID;
+		$meta_data = $meta->get_music_meta($post_id);
+		$composer_name = (isset($meta_data['composer_name']) && !empty($meta_data['composer_name'])) ? $meta_data['composer_name'] : "";
+		$publisher = (isset($meta_data['publisher']) && !empty($meta_data['publisher'])) ? $meta_data['publisher'] : "";
+		$year_of_recording = (isset($meta_data['year_of_recording']) && !empty($meta_data['year_of_recording'])) ? $meta_data['year_of_recording'] : "";
+		$additional_contributors = (isset($meta_data['additional_contributors']) && !empty($meta_data['additional_contributors'])) ? $meta_data['additional_contributors'] : "";
+		$music_url = (isset($meta_data['music_url']) && !empty($meta_data['music_url'])) ? $meta_data['music_url'] : "";
+		$music_price = (isset($meta_data['music_price']) && !empty($meta_data['music_price'])) ? $meta_data['music_price'] : "";
+		?>
+		<table class="my-music-meta-box-table">
+			<tbody>
+				<tr>
+					<th>
+						<label for="my-music-composer-name"><?php _e( 'Composer Name', 'my-music' ); ?>:</label>
+					</th>
+					<td>
+						<input type="text" id="my-music-composer-name" name="composer_name" value="<?php echo $composer_name; ?>">
+					</td>
+				</tr>
+
+				<tr>
+					<th>
+						<label for="my-music-publisher"><?php _e( 'Publisher', 'my-music' ); ?>:</label>
+					</th>
+					<td>
+						<input type="text" id="my-music-publisher" name="publisher" value="<?php echo $publisher; ?>">
+					</td>
+				</tr>
+				
+				<tr>
+					<th>
+						<label for="my-music-year-of-recording"><?php _e( 'Year of Recording', 'my-music' ); ?>:</label>
+					</th>
+					<td>
+						<input type="number" id="my-music-year-of-recording" name="year_of_recording" value="<?php echo $year_of_recording; ?>">
+					</td>
+				</tr>
+
+				<tr>
+					<th>
+						<label for="my-music-additional-contributors"><?php _e( 'Additional Contributors', 'my-music' ); ?>:</label>
+					</th>
+					<td>
+						<input type="text" id="my-music-additional-contributors" name="additional_contributors" value="<?php echo $additional_contributors; ?>">
+					</td>
+				</tr>
+
+				<tr>
+					<th>
+						<label for="my-music-url"><?php _e( 'URL', 'my-music' ); ?>:</label>
+					</th>
+					<td>
+						<input type="url" id="my-music-url" name="music_url" value="<?php echo $music_url; ?>">
+					</td>
+				</tr>
+
+				<tr>
+					<th>
+						<label for="my-music-price"><?php _e( 'Price', 'my-music' ); ?>:</label>
+					</th>
+					<td>
+						<span class="my-music-price-icon">$</span>
+						<input type="number" id="my-music-price" name="music_price" value="<?php echo $music_price; ?>">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Callback function for add/update music meta data
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_save_meta_data( $post_id ) {
+		$meta = new My_Music_Meta();
+		$allowed_fields = array(
+			'composer_name',
+			'publisher',
+			'year_of_recording',
+			'additional_contributors',
+			'music_url',
+			'music_price'
+		);
+		if(!isset($_POST) || empty($_POST)) {
+			return;
+		}
+		foreach ($_POST as $key => $value) {
+			if(in_array( $key, $allowed_fields )) {
+				$meta->update_music_meta( $post_id, $key, $value );
+			}
+		}
+	}
 }
