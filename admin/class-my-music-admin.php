@@ -625,4 +625,19 @@ class My_Music_Admin {
 		ob_end_clean();
 		return $shortcode_html;
 	}
+
+	/**
+	 * Plugin action links
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_plugin_action_links( $plugin_actions, $plugin_file ) {
+		
+		$new_actions = array();
+		if ( 'my-music/my-music.php' === $plugin_file ) {
+			$new_actions['my_music_plugin_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'my-music' ), esc_url( admin_url( 'edit.php?post_type=music&page=my-music-settings' ) ) );
+		}
+	
+		return array_merge( $new_actions, $plugin_actions );
+	}
 }
