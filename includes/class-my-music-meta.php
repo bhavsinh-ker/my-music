@@ -56,10 +56,7 @@ class My_Music_Meta {
 	 * @access   public
 	 */
 	public function add_music_meta( $music_id, $meta_key, $meta_value ) {
-		$the_post = wp_is_post_revision( $music_id );
-		if ( $the_post ) {
-			$music_id = $the_post;
-		}
+		
 		return $this->dbobj->query(
 			$this->dbobj->prepare(
 			   "
@@ -90,11 +87,6 @@ class My_Music_Meta {
 			return $this->add_music_meta( $music_id, $meta_key, $meta_value );
 		}
 
-		$the_post = wp_is_post_revision( $music_id );
-		if ( $the_post ) {
-			$music_id = $the_post;
-		}
-
 		return $this->dbobj->query(
 			$this->dbobj->prepare(
 			   "
@@ -114,11 +106,6 @@ class My_Music_Meta {
 	 * @access   public
 	 */
 	public function get_music_meta( $music_id, $meta_key = '', $single = false ) {
-
-		$the_post = wp_is_post_revision( $music_id );
-		if ( $the_post ) {
-			$music_id = $the_post;
-		}
 
 		/* Get all music meta based on music id */
 		if($meta_key=='') {
