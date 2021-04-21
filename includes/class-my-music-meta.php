@@ -100,6 +100,24 @@ class My_Music_Meta {
 	}
 
 	/**
+	 * delete music meta
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 */
+	public function delete_music_meta( $music_id, $meta_key = '' ) {
+		
+		$where_condition = array(
+			'music_id' => $music_id
+		);
+		if($meta_key!='') {
+			$where_condition['meta_key'] = $meta_key;
+		}
+		return $this->dbobj->delete( $this->table_name, $where_condition );
+		
+	}
+
+	/**
 	 * get music meta
 	 *
 	 * @since    1.0.0

@@ -353,6 +353,16 @@ class My_Music_Admin {
 	}
 
 	/**
+	 * Callback function for delete music meta data
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_delete_meta_data( $post_id ) {
+		$meta = new My_Music_Meta();
+		$meta->delete_music_meta( $post_id );
+	}
+
+	/**
 	 * Add admin menu for setting page
 	 *
 	 * @since    1.0.0
