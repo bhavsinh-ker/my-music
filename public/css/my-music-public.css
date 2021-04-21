@@ -1,4 +1,106 @@
-/**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
- */
+.my-music,
+.my-music .my-music-list,
+.my-music-card,
+.my-music-pagination {
+    width: 100%;
+    display: block;
+}
+.my-music-list>ul,
+.my-music-list>ul>li,
+.my-music-pagination>ul,
+.my-music-pagination>ul>li {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+.my-music-list>ul>li {
+    width: calc( 25% - 15px );
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+.my-music-list>ul>li:nth-child(4n+0) {
+    margin-right: 0px;
+}
+
+.my-music-card {
+    background-color: #FFF;
+    border: 1px solid #EEE;
+    -webkit-box-shadow: 0 0 10px -2px rgba(0,0,0,0.5);
+    box-shadow: 0 0 10px -2px rgba(0,0,0,0.5);
+}
+.my-music-card img {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+}
+.my-music-card .my-music-card-body {
+    padding: 15px;
+}
+.my-music-card .my-music-card-body a,
+.my-music-pagination>ul>li.my-music-pagination-link a {
+    text-decoration: none;
+}
+.my-music-card .my-music-card-body .my-music-card-meta {
+    margin-bottom: 10px;
+}
+.my-music-card .my-music-card-body .my-music-card-meta ul,
+.my-music-card .my-music-card-body .my-music-card-meta ul li {
+    margin: 0;
+    padding: 0;
+}
+.my-music-card .my-music-card-body .my-music-card-meta ul {
+    padding-left: 20px;
+}
+.my-music-card .my-music-card-body .my-music-card-meta ul li:not(:last-child) {
+    margin-bottom: 5px;
+}
+.music-btn {
+    background-color: #EEE;
+    border: 1px solid #CCC;
+    color: #000;
+    padding: 5px 10px;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -ms-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
+}
+.music-btn:hover {
+    background-color: #CCC;
+    border: 1px solid #EEE;
+}
+
+.my-music-pagination {
+    display: inline-block;
+}
+.my-music-pagination>ul {
+    clear: both;
+}
+.my-music-pagination>ul>li {
+    float: left;
+}
+.my-music-pagination>ul>li.my-music-pagination-link span {
+    min-width: 35px;
+    display: inline-block;
+    text-align: center;
+    background-color: #EEE;
+    padding: 5px;
+    border: 1px solid #CCC;
+    border-right: none;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -ms-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
+    color: #000;
+}
+.my-music-pagination>ul>li.my-music-pagination-link:last-child span {
+    border-right: 1px solid #CCC;
+}
+.my-music-pagination>ul>li.my-music-pagination-link:hover span,
+.my-music-pagination>ul>li.my-music-pagination-link.active span {
+    background-color: #CCC;
+}

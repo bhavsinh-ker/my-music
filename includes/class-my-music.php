@@ -170,6 +170,8 @@ class My_Music {
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'my_music_setting_registration' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'my_music_admin_menu' );
+
+		$this->loader->add_action( 'init', $plugin_admin, 'my_music_shortcode_registration' );
 	}
 
 	/**

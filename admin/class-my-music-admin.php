@@ -394,4 +394,248 @@ class My_Music_Admin {
 			register_setting( 'my_music_settings_group', $setting );
 		}
 	}
+
+	/**
+	 * Shortcode registration
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_shortcode_registration() {
+		add_shortcode( 'music', array(
+			$this,
+			'my_music_shortcode'
+		) );
+	}
+
+	/**
+	 * Music Shortcode Function
+	 *
+	 * @since    1.0.0
+	 */
+	public function my_music_shortcode($atts) {
+		$atts = shortcode_atts( array(
+			'year' => '',
+			'genre' => ''
+		), $atts );		
+
+		/* General query */
+		$args = array(
+			'post_type'          	=> 'music',
+            'nopaging'            	=> true,
+            'post_status'        	=> array( 'publish' ),
+            'fields'           		=> 'ids',
+            'suppress_filters'		=> false,
+			'numberposts' 		=> -1
+		);
+		/* EOF general query */
+
+		/* Year filter */
+		if($atts['year']!='') {
+			$year = $atts['year'];
+			global $wpdb;
+			$table_name = $wpdb->prefix . 'musicmeta';
+			$music_ids = $wpdb->get_results(
+				"SELECT `music_id` FROM `$table_name` WHERE `music_meta_key` = 'year_of_recording' AND `music_meta_value` = '$year';",
+				ARRAY_N
+			);
+			if(!empty($music_ids) && is_array($music_ids)) {
+				foreach ($music_ids as $music_id) {
+					if(isset($music_id[0])) {
+						$args['post__in'][] = $music_id[0];
+					}
+				}
+			}
+		}
+		/* EOF Year filter */
+
+		/* Genre filter */
+		if($atts['genre']!='') {
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => 'genre',
+					'field'    => 'slug',
+					'terms'    => $atts['genre']
+				),
+			);
+		}
+		/* EOF genre filter */
+
+		/* Pagination process */
+		$limit = get_option("my_music_musics_per_page", "10");
+		$paged = (isset($_GET['music_paged'])) ? $_GET['music_paged'] : 1;
+		$offset_data = "0";
+		$all_music_posts = get_posts($args);
+		$total_music_data = count($all_music_posts);
+		$numer_of_pages = $total_music_data / $limit;
+        if (is_float($numer_of_pages)) {
+            $numer_of_pages = ((int) $numer_of_pages) + 1;
+        }
+		if (isset($paged) && $paged != '1') {
+            $offset_data = ($paged - 1) * $limit;
+        }
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		ob_start();
+		/* EOF pagination process */
+
+		unset($args['fields']);
+		unset($args['nopaging']);
+		$args['numberposts'] = $limit;
+		$args['offset'] = $offset_data;
+		$music_posts = get_posts($args);
+		?>
+		<div class="my-music">
+			<?php if(!is_wp_error($music_posts) && !empty($music_posts)) { ?>
+			<div class="my-music-list">
+				<ul>
+					<?php 
+						$music_meta_obj = new My_Music_Meta();
+						foreach ($music_posts as $music_post) {
+							$music_id = $music_post->ID;
+							$music_title = $music_post->post_title;
+							if(has_post_thumbnail( $music_id )) {
+								$music_img = get_the_post_thumbnail_url( $music_id, array(500,300) );
+							} else {
+								$music_img = "https://via.placeholder.com/500x300.png?text=".$music_title;
+							}
+							$music_meta = $music_meta_obj->get_music_meta( $music_id );
+							$composer_name = (isset($music_meta['composer_name'])) ? $music_meta['composer_name'] : '';
+							$publisher = (isset($music_meta['publisher'])) ? $music_meta['publisher'] : '';
+							$year_of_recording = (isset($music_meta['year_of_recording'])) ? $music_meta['year_of_recording'] : '';
+							$additional_contributors = (isset($music_meta['additional_contributors'])) ? $music_meta['additional_contributors'] : '';
+							$music_price = (isset($music_meta['music_price'])) ? $music_meta['music_price'] : '';
+							$music_link = (isset($music_meta['music_url'])) ? $music_meta['music_url'] : '#';
+							$music_excerpt = apply_filters('the_excerpt', $music_post->post_excerpt);
+							$music_genre = wp_get_post_terms( $music_id, 'genre', array( 'fields' => 'names' ) );
+							$music_genre_str = false;
+							if(!is_wp_error($music_genre) && !empty($music_genre)) {
+								$music_genre_str = implode(", ", $music_genre);
+							}
+					?>
+					<li>
+						<div class="my-music-card">
+							<a href="<?php echo $music_link; ?>" target="_blank" title="<?php echo $music_title; ?>">
+								<img src="<?php echo $music_img; ?>" alt="<?php echo $music_title; ?>">
+							</a>
+							<div class="my-music-card-body">
+								<a href="<?php echo $music_link; ?>" target="_blank" title="<?php echo $music_title; ?>">
+									<h3><?php echo $music_title; ?></h3>
+								</a>
+								<div class="my-music-card-meta">
+									<ul>
+										<?php if($music_genre_str!=false) { ?>
+										<li>
+											<b><?php _e( 'Genre', 'my-music' ); ?></b>: <span><?php echo $music_genre_str; ?></span>
+										</li>
+										<?php } if($composer_name!="") { ?>
+										<li>
+											<b><?php _e( 'Composer Name', 'my-music' ); ?></b>: <span><?php echo $composer_name; ?></span>
+										</li>
+										<?php } if($publisher!="") { ?>
+										<li>
+											<b><?php _e( 'Publisher', 'my-music' ); ?></b>: <span><?php echo $publisher; ?></span>
+										</li>
+										<?php } if($year_of_recording!="") { ?>
+										<li>
+											<b><?php _e( 'Year of Recording', 'my-music' ); ?></b>: <span><?php echo $year_of_recording; ?></span>
+										</li>
+										<?php } if($additional_contributors!="") { ?>
+										<li>
+											<b><?php _e( 'Additional Contributors', 'my-music' ); ?></b>: <span><?php echo $additional_contributors; ?></span>
+										</li>
+										<?php } if($music_price!="") { ?>
+										<li>
+											<b><?php _e( 'Price', 'my-music' ); ?></b>: <span><?php echo $currency.$music_price; ?></span>
+										</li>
+										<?php } ?>
+									</ul>
+								</div>
+								<?php if($music_excerpt!="") { ?>
+								<div class="my-music-card-excerpt">
+								<?php echo $music_excerpt; ?>
+								</div>
+								<?php } ?>
+								<a href="<?php echo $music_link; ?>" class="music-btn" target="_blank" title="<?php echo $music_title; ?>">
+									<?php _e( 'Listen', 'my-music' ); ?>
+								</a>
+							</div>
+						</div>
+					</li>
+					<?php 
+						}
+					?>
+				</ul>
+			</div>
+			<?php 
+				} if($numer_of_pages>1) {
+					$next_page = $paged+1;
+					$previos_page = $paged-1;
+					$next_page_link = $previos_page_link = false;
+					if($next_page<=$numer_of_pages) {
+						$next_page_link = add_query_arg( 'music_paged', $next_page, $current_url );
+					}
+					if($previos_page>=1) {
+						$previos_page_link = add_query_arg( 'music_paged', $previos_page, $current_url );
+					}
+			?>
+			<div class="my-music-pagination">
+				<ul>
+					<li class="my-music-pagination-link my-music-pagination-link-previos <?php echo ($previos_page_link===false) ? 'disable' : ''; ?>">
+						<?php 
+							if($previos_page_link!==false) {
+						?>
+						<a href="<?php echo $previos_page_link; ?>">
+						<?php 
+							}
+						?>
+							<span><?php _e( 'Previos', 'my-music' ); ?></span>
+						<?php 
+							if($previos_page_link!==false) {
+						?>
+						</a>
+						<?php 
+							}
+						?>
+					</li>
+					<?php 
+						$i = 1;
+						while ($i <= $numer_of_pages) {
+							$page_link = add_query_arg( 'music_paged', $i, $current_url );
+					?>
+					<li class="my-music-pagination-link <?php echo ($i==$paged) ? 'active' : ''; ?>">
+						<a href="<?php echo $page_link; ?>">
+							<span><?php _e( $i, 'my-music' ); ?></span>
+						</a>
+					</li>
+					<?php
+							$i++; 
+						}
+					?>
+					<li class="my-music-pagination-link my-music-pagination-link-next <?php echo ($next_page_link===false) ? 'disable' : ''; ?>">
+						<?php 
+							if($next_page_link!==false) {
+						?>
+						<a href="<?php echo $next_page_link; ?>">
+						<?php 
+							}
+						?>
+							<span><?php _e( 'Next', 'my-music' ); ?></span>
+						<?php 
+							if($next_page_link!==false) {
+						?>
+						</a>
+						<?php 
+							}
+						?>
+					</li>
+				</ul>
+			</div>
+			<?php 
+				}
+			?>
+		</div>
+		<?php
+		$shortcode_html = ob_get_contents();
+		ob_end_clean();
+		return $shortcode_html;
+	}
 }
